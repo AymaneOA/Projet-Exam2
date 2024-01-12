@@ -1,46 +1,47 @@
-Package com.example;
+package com.example;
+
 public class Produit {
     private Long id;
     private String nom;
     private double prix;
-    private int quantite;
+    private int quantité;
 
-    public Produit(Long id, String nom, double prix, int quantite) {
+    public Produit(Long id, String nom, double prix, int quantité) {
         this.id = id;
         this.nom = nom;
         this.prix = prix;
-        this.quantite = quantite;
+        this.quantité = quantité;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getNom() {
-        return nom;
-    }
-
-    public double getPrix() {
-        return prix;
-    }
-
-    public int getQuantite() {
-        return quantite;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
     }
 
     public void setNom(String nom) {
         this.nom = nom;
     }
 
+    public double getPrix() {
+        return prix;
+    }
+
     public void setPrix(double prix) {
         this.prix = prix;
     }
 
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
+    public int getQuantité() {
+        return quantité;
+    }
+
+    public void setQuantité(int quantité) {
+        this.quantité = quantité;
     }
 }

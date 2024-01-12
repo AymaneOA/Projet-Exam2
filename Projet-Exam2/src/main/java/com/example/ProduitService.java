@@ -1,56 +1,48 @@
-Package com.example;
-import java.util.List;
-import java.util.stream.Collectors;
+package com.example;
+
+import java.util.*;
 
 public class ProduitService {
-    private List<Produit> produits;
+    private Map<Long, Produit> produits = new HashMap<>();
 
-    public ProduitService(List<Produit> produits) {
-        this.produits = produits;
-    }
-
-    public void createProduit(Produit produit) {
-        if (!checkUnicity(produit.getId(), produit.getNom())) {
-            if (validateData(produit.getPrix(), produit.getQuantite())) {
-                produits.add(produit);
-            } else {
-                throw new IllegalArgumentException("Prix et quantité doivent être positifs.");
-            }
-        } else {
+    // Création d'un produit
+    public void create(Produit produit) {
+        if (produits.containsKey(produit.getId()) || produitExiste(produit.getNom())) {
             throw new IllegalArgumentException("Un produit avec le même ID ou nom existe déjà.");
         }
-    }
-
-    public Produit readProduit(Long id) {
-        return produits.stream()
-                .filter(produit -> produit.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID : " + id));
-    }
-
-    public void updateProduit(Produit produit) {
-        Produit existingProduit = readProduit(produit.getId());
-        if (validateData(produit.getPrix(), produit.getQuantite())) {
-            existingProduit.setNom(produit.getNom());
-            existingProduit.setPrix(produit.getPrix());
-            existingProduit.setQuantite(produit.getQuantite());
-        } else {
-            throw new IllegalArgumentException("Prix et quantité doivent être positifs.");
+        if (produit.getPrix() <= 0 || produit.getQuantité() <= 0) {
+            throw new IllegalArgumentException("Le prix et la quantité des produits doivent être positifs.");
         }
+        produits.put(produit.getId(), produit);
     }
 
-    public void deleteProduit(Long id) {
-        produits.removeIf(produit -> produit.getId().equals(id));
-    }
-
-    public boolean checkUnicity(Long id, String nom) {
-        return produits.stream().anyMatch(produit -> produit.getId().equals(id) || produit.getNom().equals(nom));
-    }
-
-    public boolean validateData(double prix, int quantite) {
-        if (prix < 0 || quantite < 0) {
-            throw new IllegalArgumentException("Prix et quantité doivent être positifs.");
+    // Lecture d'un produit
+    public Produit read(Long id) {
+        if (!produits.containsKey(id)) {
+            throw new NoSuchElementException("Le produit recherché n'existe pas.");
         }
-        return true;
+        return produits.get(id);
+    }
+
+    // Mise à jour d'un produit
+    public void update(Produit produit) {
+        if (!produits.containsKey(produit.getId())) {
+            throw new NoSuchElementException("Le produit recherché pour la mise à jour n'existe pas.");
+        }
+      
+        produits.put(produit.getId(), produit);
+    }
+
+    // Suppression d'un produit
+    public void delete(Long id) {
+        if (!produits.containsKey(id)) {
+            throw new NoSuchElementException("Le produit recherché pour la suppression n'existe pas.");
+        }
+        produits.remove(id);
+    }
+
+    // Vérification de l'existence d'un produit par son nom
+    private boolean produitExiste(String nom) {
+        return produits.values().stream().anyMatch(produit -> produit.getNom().equals(nom));
     }
 }
